@@ -33,6 +33,13 @@ export function App() {
     localStorage.setItem('notesData', JSON.stringify(notesData))
   }
 
+  function onNoteDeleted(noteId: string) {
+    const notesWithoutDeletedNote = notes.filter((note) => note.id !== noteId)
+
+    setNotes(notesWithoutDeletedNote)
+    localStorage.setItem('notesData', JSON.stringify(notesWithoutDeletedNote))
+  }
+
   function handleSearch(event: ChangeEvent<HTMLInputElement>) {
     const query = event.target.value
 
@@ -61,7 +68,7 @@ export function App() {
       <div className="lg:grid-col-3 grid auto-rows-[15.625rem] grid-cols-1 gap-6 md:grid-cols-2">
         <NewNoteCard onNoteCreated={onNoteCreated} />
         {filteredNotes.map((note) => (
-          <NoteCard key={note.id} note={note} />
+          <NoteCard key={note.id} note={note} onNoteDeleted={onNoteDeleted} />
         ))}
       </div>
     </div>
