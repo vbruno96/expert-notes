@@ -3,7 +3,11 @@ import { X } from 'lucide-react'
 import { ChangeEvent, FormEvent, useState } from 'react'
 import { toast } from 'sonner'
 
-export function NewNoteCard() {
+interface NewNoteCardProps {
+  onNoteCreated: (content: string) => void
+}
+
+export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
   const [shouldShowOnboarding, setShouldShowOnborading] = useState(true)
   const [content, setContent] = useState('')
 
@@ -19,7 +23,13 @@ export function NewNoteCard() {
 
   function handleSaveNote(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    console.log(content)
+
+    onNoteCreated(content)
+
+    setContent('')
+
+    setShouldShowOnborading(true)
+
     toast.success('Nota criada com sucesso')
   }
 
@@ -36,7 +46,12 @@ export function NewNoteCard() {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 flex h-[60vh] w-full max-w-[40rem] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-md bg-slate-700 outline-none">
+        <Dialog.Content
+          onCloseAutoFocus={() =>
+            content === '' && setShouldShowOnborading(true)
+          }
+          className="fixed left-1/2 top-1/2 flex h-[60vh] w-full max-w-[40rem] -translate-x-1/2 -translate-y-1/2 flex-col overflow-hidden rounded-md bg-slate-700 outline-none"
+        >
           <Dialog.Close className="absolute right-0 top-0 bg-slate-800 p-1.5 text-slate-400 hover:text-slate-100">
             <X className="size-5" />
           </Dialog.Close>
@@ -64,6 +79,7 @@ export function NewNoteCard() {
                   autoFocus
                   className="flex-1 resize-none bg-transparent text-sm leading-6 text-slate-400 outline-none"
                   onChange={handleContentChanged}
+                  value={content}
                 />
               )}
             </div>
